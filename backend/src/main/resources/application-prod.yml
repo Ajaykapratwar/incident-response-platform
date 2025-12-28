@@ -1,10 +1,8 @@
 spring:
   datasource:
-    # DATABASE_URL can be in Railway format (postgresql://...) or JDBC format (jdbc:postgresql://...)
-    # The DataSourceConfig will handle parsing both formats
-    url: ${DATABASE_URL:}
-    username: ${DATABASE_USERNAME:}
-    password: ${DATABASE_PASSWORD:}
+    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -13,7 +11,6 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        # Remove explicit dialect - Hibernate 6 auto-detects PostgreSQL
         format_sql: false
 
   servlet:
@@ -39,4 +36,3 @@ logging:
   level:
     root: INFO
     com.incident: INFO
-
