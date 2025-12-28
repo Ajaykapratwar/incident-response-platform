@@ -116,3 +116,4 @@ Output in `dist/` directory, ready for Vercel deployment.
 - Mobile browsers with Geolocation API support
 - WebSocket support required for real-time features
 
+

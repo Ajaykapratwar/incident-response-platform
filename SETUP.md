@@ -271,3 +271,4 @@ npm run preview
 - `VITE_API_URL` - Backend API URL
 - `VITE_WS_URL` - WebSocket URL
 
+

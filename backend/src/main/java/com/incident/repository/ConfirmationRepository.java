@@ -14,3 +14,4 @@ public interface ConfirmationRepository extends JpaRepository<Confirmation, Long
     Long countByIncident(Incident incident);
 }
 
+

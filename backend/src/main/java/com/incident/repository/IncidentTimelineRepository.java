@@ -12,3 +12,4 @@ public interface IncidentTimelineRepository extends JpaRepository<IncidentTimeli
     List<IncidentTimeline> findByIncidentOrderByCreatedAtAsc(Incident incident);
 }
 
+

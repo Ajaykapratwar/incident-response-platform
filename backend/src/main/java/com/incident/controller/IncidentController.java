@@ -3,7 +3,6 @@ package com.incident.controller;
 import com.incident.dto.*;
 import com.incident.service.FileStorageService;
 import com.incident.service.IncidentService;
-import com.incident.entity.Incident;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

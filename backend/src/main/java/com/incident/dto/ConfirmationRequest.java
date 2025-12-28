@@ -15,3 +15,4 @@ public class ConfirmationRequest {
     private Double longitude;
 }
 
+

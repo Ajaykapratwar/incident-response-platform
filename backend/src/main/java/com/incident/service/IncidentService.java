@@ -127,6 +127,13 @@ public class IncidentService {
         User updatedBy = userRepository.findByUsername(updatedByUsername)
             .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // Role-based restrictions: Only ADMIN can verify or mark as FALSE
+        if (status == Incident.IncidentStatus.VERIFIED || status == Incident.IncidentStatus.FALSE) {
+            if (updatedBy.getRole() != User.Role.ADMIN) {
+                throw new RuntimeException("Only administrators can verify or mark incidents as false");
+            }
+        }
+
         incident.setStatus(status);
         if (notes != null && !notes.isEmpty()) {
             incident.setAdminNotes(notes);

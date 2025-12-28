@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react'
 import { incidentApi } from '../services/api'
 import { connectWebSocket, disconnectWebSocket } from '../services/websocket'
+import { useAuth } from '../context/AuthContext'
 
 export default function AdminPanel() {
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'ADMIN'
+  const isResponder = user?.role === 'RESPONDER'
   const [incidents, setIncidents] = useState([])
   const [selectedIncident, setSelectedIncident] = useState(null)
   const [timeline, setTimeline] = useState([])
@@ -138,7 +142,14 @@ export default function AdminPanel() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {isAdmin ? 'Admin Panel' : 'Responder Panel'}
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Logged in as: <span className="font-medium">{user?.username}</span> ({user?.role})
+          </p>
+        </div>
         <div className="flex items-center space-x-3">
           <select
             value={statusFilter}
@@ -327,13 +338,15 @@ export default function AdminPanel() {
                   placeholder="Add notes (optional)"
                 />
                 <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() => handleStatusUpdate(selectedIncident.id, 'VERIFIED')}
-                    className="btn-primary text-sm"
-                    disabled={updating || selectedIncident.status === 'VERIFIED'}
-                  >
-                    Verify
-                  </button>
+                  {isAdmin && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedIncident.id, 'VERIFIED')}
+                      className="btn-primary text-sm"
+                      disabled={updating || selectedIncident.status === 'VERIFIED'}
+                    >
+                      Verify
+                    </button>
+                  )}
                   <button
                     onClick={() => handleStatusUpdate(selectedIncident.id, 'IN_PROGRESS')}
                     className="btn-primary text-sm"
@@ -348,14 +361,21 @@ export default function AdminPanel() {
                   >
                     Resolve
                   </button>
-                  <button
-                    onClick={() => handleStatusUpdate(selectedIncident.id, 'FALSE')}
-                    className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-700 disabled:opacity-50"
-                    disabled={updating || selectedIncident.status === 'FALSE'}
-                  >
-                    Mark False
-                  </button>
+                  {isAdmin && (
+                    <button
+                      onClick={() => handleStatusUpdate(selectedIncident.id, 'FALSE')}
+                      className="bg-red-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-700 disabled:opacity-50"
+                      disabled={updating || selectedIncident.status === 'FALSE'}
+                    >
+                      Mark False
+                    </button>
+                  )}
                 </div>
+                {!isAdmin && (
+                  <p className="text-xs text-gray-500 mt-2">
+                    Note: Only administrators can verify or mark incidents as false.
+                  </p>
+                )}
               </div>
             </div>
           ) : (

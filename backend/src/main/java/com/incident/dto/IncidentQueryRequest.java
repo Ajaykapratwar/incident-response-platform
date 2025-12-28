@@ -15,3 +15,4 @@ public class IncidentQueryRequest {
     private Integer offset = 0;
 }
 
+

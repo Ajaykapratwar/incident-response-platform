@@ -161,3 +161,4 @@ java -jar target/incident-response-platform-1.0.0.jar
 5. **Logging:** Structured logging with ELK stack
 6. **Security:** Rate limiting, input sanitization, CSRF protection
 
+
