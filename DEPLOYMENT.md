@@ -24,7 +24,52 @@ Complete deployment guide for the Incident Response Platform.
 
 Follow provider-specific setup instructions.
 
-## Step 2: Backend Deployment (Render)
+## Step 2: Backend Deployment
+
+### Option A: Railway (Recommended)
+
+1. **Connect Repository**
+   - Go to Railway Dashboard
+   - New Project → Deploy from GitHub repo
+   - Select your repository
+
+2. **Add PostgreSQL Database**
+   - In your Railway project, click "+ New"
+   - Select "Database" → "Add PostgreSQL"
+   - Railway will automatically create a `DATABASE_URL` environment variable
+
+3. **Configure Service**
+   - Railway will auto-detect Java/Spring Boot
+   - **Root Directory:** `backend`
+   - **Build Command:** `mvn clean install -DskipTests`
+   - **Start Command:** `java -jar target/incident-response-platform-1.0.0.jar --spring.profiles.active=prod`
+
+4. **Environment Variables**
+   Railway automatically provides:
+   - `DATABASE_URL` (in format: `postgresql://user:password@host:port/database`)
+   - `PORT` (automatically set by Railway)
+   
+   You need to add:
+   ```
+   SPRING_PROFILES_ACTIVE=prod
+   JWT_SECRET=<generate-32-char-secret>
+   UPLOAD_DIR=/app/uploads
+   ```
+
+5. **Generate JWT Secret**
+   ```bash
+   # Use a secure random string (minimum 32 characters)
+   openssl rand -base64 32
+   ```
+
+6. **Deploy**
+   - Railway will automatically deploy on push to main branch
+   - Check deployment logs for any issues
+   - Note the service URL (e.g., `https://your-app.up.railway.app`)
+
+**Note:** The application now automatically handles Railway's `DATABASE_URL` format. No manual parsing needed!
+
+### Option B: Render
 
 1. **Connect Repository**
    - Go to Render Dashboard
@@ -74,9 +119,10 @@ Follow provider-specific setup instructions.
 
 3. **Environment Variables**
    ```
-   VITE_API_URL=https://incident-response-backend.onrender.com
-   VITE_WS_URL=https://incident-response-backend.onrender.com
+   VITE_API_URL=https://your-backend-url.up.railway.app
+   VITE_WS_URL=https://your-backend-url.up.railway.app
    ```
+   (Replace with your actual Railway backend URL)
 
 4. **Deploy**
    - Click "Deploy"
@@ -154,9 +200,13 @@ For production, use Flyway or Liquibase instead of `ddl-auto: update`:
 
 ### Backend Issues
 
-- **Database Connection:** Verify DATABASE_URL format
-- **Port:** Render uses PORT environment variable
+- **Database Connection:** 
+  - Railway: `DATABASE_URL` is automatically provided in `postgresql://` format (handled automatically)
+  - Render/Other: Use JDBC format: `jdbc:postgresql://host:port/database`
+  - Verify the environment variable is set correctly
+- **Port:** Railway and Render use PORT environment variable (automatically set)
 - **Build Failures:** Check Maven logs, Java version
+- **DATABASE_URL not resolved:** Ensure `SPRING_PROFILES_ACTIVE=prod` is set
 
 ### Frontend Issues
 
